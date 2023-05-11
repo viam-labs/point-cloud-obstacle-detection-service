@@ -29,13 +29,11 @@ def get_random_degrees():
 
 async def move_straight_and_avoid_obstacles(base: Base, obstacle_detection_service: VisionClient):
     obstacle = await obstacle_detection_service.get_object_point_clouds("rplidar")
-    p = obstacle[0].geometries.geometries[0].center
     
-    while (p.x != 0) or (p.y != 0):
+    while len(obstacle) != 0:
             await base.stop()
             await base.spin(get_random_degrees(), ANGULAR_VELOCITY)
             obstacle = await obstacle_detection_service.get_object_point_clouds("rplidar")
-            p = obstacle[0].geometries.geometries[0].center
     
     await base.set_velocity(linear=Vector3(x=0,y=LINEAR_VELOCITY,z=0), angular=Vector3(x=0,y=0,z=0))
      

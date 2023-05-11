@@ -27,7 +27,6 @@ var (
 	Model            = resource.NewModel("viamlabs", "service", "obstacle-detection")
 	errUnimplemented = errors.New("unimplemented")
 	API              = resource.APINamespaceRDK.WithServiceType("vision")
-	obstacle         = r3.Vector{}
 )
 
 func newObstacleService(deps resource.Dependencies, conf resource.Config, logger golog.Logger) (vision.Service, error) {
@@ -118,26 +117,31 @@ func getDistance(p r3.Vector) float64 {
 	return math.Pow(math.Pow(p.X, 2)+math.Pow(p.Y, 2)+math.Pow(p.X, 2), 0.5)
 }
 
-func (service *ObstacleService) checkForObstacles(p r3.Vector, d pointcloud.Data) bool {
-	if p.X < *service.zeroPosition {
-		return true
-	}
-
-	distance := getDistance(p)
-	if distance < *service.maxDistance {
-		obstacle = r3.Vector{X: p.X, Y: p.Y, Z: p.Z}
-		return false
-	}
-	return true
-}
-
 func (service *ObstacleService) GetObjectPointClouds(ctx context.Context, cameraName string, extra map[string]interface{}) ([]*viz.Object, error) {
-	obstacle = r3.Vector{}
 	currentPointcloud, err := service.camera.NextPointCloud(ctx)
 	if err != nil {
 		return nil, err
 	}
-	currentPointcloud.Iterate(0, 0, service.checkForObstacles)
+
+	noObstacleFound := true
+	obstacle := r3.Vector{}
+	currentPointcloud.Iterate(0, 0, func(p r3.Vector, d pointcloud.Data) bool {
+		if p.X < *service.zeroPosition {
+			return true
+		}
+
+		distance := getDistance(p)
+		if distance < *service.maxDistance {
+			noObstacleFound = false
+			obstacle = r3.Vector{X: p.X, Y: p.Y, Z: p.Z}
+			return false
+		}
+		return true
+	})
+	if noObstacleFound {
+		return []*viz.Object{}, nil
+	}
+
 	pc := pointcloud.New()
 	pc.Set(obstacle, nil)
 	geo := spatialmath.NewPoint(obstacle, "obstacle")
