@@ -1,0 +1,38 @@
+{
+  "modules": [
+    {
+      "executable_path": "/usr/local/bin/rplidar-module",
+      "name": "rplidar_module"
+    },
+    {
+      "executable_path": "/home/pi/obstacle-detection/obstacle-service/obstacle-service",
+      "name": "obstacle-service"
+    }
+  ],
+  "services": [
+    {
+      "name": "obstacle-vision-service",
+      "namespace": "rdk",
+      "type": "vision",
+      "attributes": {
+        "camera": "rplidar",
+        "max_distance_mm": 750,
+        "zero_position_mm": 150
+      },
+      "depends_on": [
+        "rplidar"
+      ],
+      "model": "viamlabs:service:obstacle-detection"
+    }
+  ],
+  "components": [
+    {
+      "depends_on": [],
+      "namespace": "rdk",
+      "type": "camera",
+      "model": "viam:lidar:rplidar",
+      "name": "rplidar",
+      "attributes": {}
+    }
+  ]
+}
