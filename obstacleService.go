@@ -126,7 +126,7 @@ func (service *ObstacleService) GetObjectPointClouds(ctx context.Context, camera
 	noObstacleFound := true
 	obstacle := r3.Vector{}
 	currentPointcloud.Iterate(0, 0, func(p r3.Vector, d pointcloud.Data) bool {
-		if p.X < *service.zeroPosition {
+		if -p.X < *service.zeroPosition {
 			return true
 		}
 
