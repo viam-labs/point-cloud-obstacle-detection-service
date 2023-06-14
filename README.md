@@ -10,7 +10,7 @@ cd pointcloud-obstacle-detection-service
 go build
 ```
 
-Configuring the Module
+# Configuring the Module # 
 The command `go build` from earlier will create a binary. Provide the **full** path to the binary in `executable_path` and whatever you would like for the name.
 ```
 {
@@ -19,7 +19,7 @@ The command `go build` from earlier will create a binary. Provide the **full** p
 }
 ```
 
-Configuring the Service
+# Configuring the Service# 
 Of the below params the only ones that need to be changed are `max_distance_mm` and `zero_position_mm`. for `max_distance_mm` provide the furthest distance at which you would like to consider something an obstacle. For `zero_position_mm` provide the value at which you would like to filter obstacles out because they are too close to the lidar. For example if your robot pokes out in front of your lidar, this value would be the distance from the edge of the robot to the center of the lidar.
 
 
