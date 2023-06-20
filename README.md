@@ -41,3 +41,6 @@ Of the below params the only ones that need to be changed are `max_distance_mm` 
 ```
 
 See [sample-code/sample-config-linux.json](https://github.com/viam-labs/pointcloud-obstacle-detection-service/blob/main/sample-code/sample-config-linux.json) for a sample config of the pointcloud obstacle detection service detecting obstacles from an rplidar. See [here](https://github.com/viamrobotics/rplidar)  repo for more information on the rplidar
+
+## Rplidar Coordinate ##
+This module assumes that the coordinate system of your lidar is such that positive x is backwards, positive y is to the right, and positive z is upward.
